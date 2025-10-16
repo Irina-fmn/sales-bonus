@@ -5,7 +5,8 @@
  * @returns {number}
  */
 function calculateSimpleRevenue(purchase, _product) {
-   // @TODO: Расчет выручки от операции
+  // @TODO: Расчет выручки от операции
+  const { discount, sale_price, quantity } = purchase;
 }
 
 /**
@@ -16,7 +17,8 @@ function calculateSimpleRevenue(purchase, _product) {
  * @returns {number}
  */
 function calculateBonusByProfit(index, total, seller) {
-    // @TODO: Расчет бонуса от позиции в рейтинге
+  // @TODO: Расчет бонуса от позиции в рейтинге
+  const { profit } = seller;
 }
 
 /**
@@ -26,19 +28,38 @@ function calculateBonusByProfit(index, total, seller) {
  * @returns {{revenue, top_products, bonus, name, sales_count, profit, seller_id}[]}
  */
 function analyzeSalesData(data, options) {
-    // @TODO: Проверка входных данных
+  // @TODO: Проверка входных данных
+  const { calculateRevenue, calculateBonus } = options;
+  // @TODO: Проверка наличия опций
+  if (
+    !data ||
+    (!Array.isArray(data.sellers) &&
+      !Array.isArray(data.products) &&
+      !Array.isArray(data.purchase_records)) ||
+    (data.sellers.length === 0 &&
+      data.products.length === 0 &&
+      data.purchase_records.length === 0) ||
+    typeof options !== "object" ||
+    options === null ||
+    !calculateRevenue ||
+    !calculateBonus
+  ) {
+    throw new Error("Некорректные входные данные");
+  }
+  // @TODO: Подготовка промежуточных данных для сбора статистики
+  const sellerStats = data.sellers.map((seller) => {});
+  // @TODO: Индексация продавцов и товаров для быстрого доступа
+  const sellerIndex = Object.fromEntries(
+    data.sellers.map((seller) => [seller.id, seller])
+  );
+  const productIndex = Object.fromEntries(
+    data.products.map((product) => [product.sku, product])
+  );
+  // @TODO: Расчет выручки и прибыли для каждого продавца
 
-    // @TODO: Проверка наличия опций
+  // @TODO: Сортировка продавцов по прибыли
 
-    // @TODO: Подготовка промежуточных данных для сбора статистики
+  // @TODO: Назначение премий на основе ранжирования
 
-    // @TODO: Индексация продавцов и товаров для быстрого доступа
-
-    // @TODO: Расчет выручки и прибыли для каждого продавца
-
-    // @TODO: Сортировка продавцов по прибыли
-
-    // @TODO: Назначение премий на основе ранжирования
-
-    // @TODO: Подготовка итоговой коллекции с нужными полями
+  // @TODO: Подготовка итоговой коллекции с нужными полями
 }

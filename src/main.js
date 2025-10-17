@@ -7,9 +7,8 @@
 function calculateSimpleRevenue(purchase, _product) {
   // @TODO: Расчет выручки от операции
   let { discount, sale_price, quantity } = purchase;
-  discount =   1 - (discount / 100);
+  discount = 1 - discount / 100;
   return sale_price * quantity * discount;
-  
 }
 
 /**
@@ -45,7 +44,11 @@ function analyzeSalesData(data, options) {
   }
 
   // @TODO: Проверка наличия опций
-  if (!options || !options.calculateRevenue || !options.calculateBonus) {
+  if (
+    !options ||
+    typeof options.calculateRevenue !== "function" ||
+    typeof options.calculateBonus !== "function"
+  ) {
     throw new Error("Некорректные входные опций");
   }
 
@@ -66,29 +69,32 @@ function analyzeSalesData(data, options) {
 
   const productIndex = Object.fromEntries(data.products.map((p) => [p.sku, p]));
   // @TODO: Расчет выручки и прибыли для каждого продавца
-  
+
   data.purchase_records.forEach((record) => {
     // Чек
     const seller = sellerIndex[record.seller_id]; // Продавец
     // Увеличить количество продаж
     seller.sales_count += 1;
     // Увеличить общую сумму всех продаж
-    seller.revenue += record.total_amount;
+    seller.revenue += record.total_amount; //  - record.total_discount
     // Расчёт прибыли для каждого товара
     record.items.forEach((item) => {
       const product = productIndex[item.sku]; // Товар
       // Посчитать себестоимость (cost) товара как product.purchase_price, умноженную на количество товаров из чека
       const cost = product.purchase_price * item.quantity;
       // Посчитать выручку (revenue) с учётом скидки через функцию calculateRevenue
-      const.
+      const revenue = calculateRevenue(item);
       // Посчитать прибыль: выручка минус себестоимость
+      const profit = revenue - cost;
       // Увеличить общую накопленную прибыль (profit) у продавца
+      seller.profit += profit;
 
       // Учёт количества проданных товаров
-      if (!seller.products_sold[item.sku]) {
+      if (!(item.sku in seller.products_sold)) {
         seller.products_sold[item.sku] = 0;
       }
       // По артикулу товара увеличить его проданное количество у продавца
+      seller.products_sold[item.sku] += 1;
     });
   });
   // @TODO: Сортировка продавцов по прибыли

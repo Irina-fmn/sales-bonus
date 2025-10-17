@@ -21,6 +21,17 @@ function calculateSimpleRevenue(purchase, _product) {
 function calculateBonusByProfit(index, total, seller) {
   // @TODO: Расчет бонуса от позиции в рейтинге
   const { profit } = seller;
+
+  if (index === 0) {
+    return profit * 0.15;
+  } else if (index === 1 || index === 2) {
+    return profit * 0.1;
+  } else if (index === total - 1) {
+    return 0;
+  } else {
+    // Для всех остальных
+    return profit * 0.05;
+  }
 }
 
 /**
@@ -97,9 +108,14 @@ function analyzeSalesData(data, options) {
       seller.products_sold[item.sku] += 1;
     });
   });
+
   // @TODO: Сортировка продавцов по прибыли
+  sellerStats.sort((a, b) => b.profit - a.profit);
 
   // @TODO: Назначение премий на основе ранжирования
-
+  sellerStats.forEach((seller, index) => {
+    seller.bonus = calculateBonus(index, sellerStats.length, seller); // Считаем бонус
+    // seller.top_products; // Формируем топ-10 товаров
+  });
   // @TODO: Подготовка итоговой коллекции с нужными полями
 }

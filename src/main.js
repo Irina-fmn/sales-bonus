@@ -127,11 +127,11 @@ function analyzeSalesData(data, options) {
     ({ id, name, bonus, profit, sales_count, top_products, revenue }) => ({
       seller_id: id,
       name,
-      bonus: bonus.toFixed(2),
-      profit: profit.toFixed(2),
+      bonus: Number(bonus.toFixed(2)),
+      profit: Number(profit.toFixed(2)),
+      revenue: Number(revenue.toFixed(2)),
       sales_count,
       top_products,
-      revenue,
     })
   );
 }

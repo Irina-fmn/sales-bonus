@@ -121,6 +121,17 @@ function analyzeSalesData(data, options) {
       .sort((a, b) => b.quantity - a.quantity)
       .slice(0, 10); // Формируем топ-10 товаров
   });
+
   // @TODO: Подготовка итоговой коллекции с нужными полями
-  return sellerStats;
+  return sellerStats.map(
+    ({ id, name, bonus, profit, sales_count, top_products, revenue }) => ({
+      seller_id: id,
+      name,
+      bonus: bonus.toFixed(2),
+      profit: profit.toFixed(2),
+      sales_count,
+      top_products,
+      revenue,
+    })
+  );
 }
